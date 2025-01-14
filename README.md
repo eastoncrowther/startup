@@ -1,8 +1,8 @@
-# Your startup name here
+# Prisoner's Dilema
 
 [My Notes](notes.md)
 
-A brief description of the application here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+This application is a quick 5 round 2 player game. Each round both players have the choice of confessing or not confessing. Each player has 30 seconds to make their decision. Points are then awareded. If both players choose to confess they each earn 5 points. If however one player confesses while the other does not the player who did not earns 8 points while the confessor earns 0 points. If both players do not confess they each get 1 point. Both players make the exact same choice with each other 5 times. At the end of 5 rounds, the player with the most points wins!
 
 
 > [!NOTE]
@@ -18,15 +18,15 @@ A brief description of the application here. Lorem ipsum dolor sit amet, consect
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] Proper use of Markdown
-- [ ] A concise and compelling elevator pitch
+- [x] Proper use of Markdown
+- [x] A concise and compelling elevator pitch
 - [ ] Description of key features
 - [ ] Description of how you will use each technology
 - [ ] One or more rough sketches of your application. Images must be embedded in this file using Markdown image references.
 
 ### Elevator pitch
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Have you ever heard of the Prisoner's Dilemma? Experience this classic game theory challenge in a two-player showdown! Your options are simple: confess or stay quiet. If both confess, you each earn 5 points. If one stays quiet while the other confesses, the confessor takes 8 points while the quiet one gets nothing. But if you both stay quiet, you each earn only 1 point. The catch? You must repete the dilema 5 times! Will you trust them or play it safe? It's a chance to test your strategy and psycology!  
 
 ### Design
 
@@ -43,15 +43,17 @@ sequenceDiagram
 
 ### Key features
 
-- Describe your key feature
-- Describe your key feature
-- Describe your key feature
+- Secure login over HTTPS
+- Ability to see both players scores in real time
+- Buttons for each player to make a selection: confess, don't confess
+- Wins and losses from previous games are persistently stored
+- Ability to play against an automated opponet
 
 ### Technologies
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Description here
+- **HTML** - Uses correct HTML structure for application. 
 - **CSS** - Description here
 - **React** - Description here
 - **Service** - Description here
