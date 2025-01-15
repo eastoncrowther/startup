@@ -20,8 +20,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 - [x] Proper use of Markdown
 - [x] A concise and compelling elevator pitch
-- [ ] Description of key features
-- [ ] Description of how you will use each technology
+- [x] Description of key features
+- [x] Description of how you will use each technology
 - [x] One or more rough sketches of your application. Images must be embedded in this file using Markdown image references.
 
 ### Elevator pitch
@@ -79,18 +79,22 @@ Here is a sequence diagram that shows how people would interact with the backend
 - Secure login over HTTPS
 - Ability to see both players scores in real time
 - Buttons for each player to make a selection: confess, don't confess
-- Wins and losses from previous games are persistently storedt
+- Wins and losses from previous games are persistently stored
+- Timer counts down from 30 until scores are entered
 
 ### Technologies
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Uses correct HTML structure for application. 
-- **CSS** - Description here
-- **React** - Description here
-- **Service** - Description here
-- **DB/Login** - Description here
-- **WebSocket** - Description here
+- **HTML** - Handles the basic structure of the application. Two HTML pages. One for login and one for the game interface. Hyperlink to artifact with scores from preious rounds. 
+- **CSS** - Styles and animates the application to provide a more visually appealing design. Handles whitespace and colorchoice so that the website looks good on different devices.
+- **React** - Manages the application's dynamic behavior and state. After login switches to the game interface and refreshes both the timer and user decision.
+- **Service** - Backend service with endpoints for
+  - retrieving scores from previous rounds
+  - submitting player choices
+  - fetching game status (round number)
+- **DB/Login** - Store users, and previous games in database. Register and login users. Credentials securely stored in database.
+- **WebSocket** - Enables real-time communication between the players and the server. ENsures smooth gameplay
 
 ## 🚀 AWS deliverable
 
