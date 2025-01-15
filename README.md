@@ -32,7 +32,7 @@ Have you ever heard of the Prisoner's Dilemma? Experience this classic game theo
 
 ![Design image](https://github.com/eastoncrowther/startup/blob/main/Screenshot%202025-01-14%20132131.png)
 
-![design image](https://github.com/eastoncrowther/startup/blob/main/Screenshot%202025-01-14%20164345.png)
+![design image](https://github.com/eastoncrowther/startup/blob/main/Screenshot%202025-01-14%20193919.png)
 
 The red boxes under the table are the buttons the user can press to submit their decision.
 
@@ -81,6 +81,7 @@ Here is a sequence diagram that shows how people would interact with the backend
 - Buttons for each player to make a selection: confess, don't confess
 - Wins and losses from previous games are persistently stored
 - Timer counts down from 30 until scores are entered
+- Shows the weather
 
 ### Technologies
 
@@ -93,6 +94,7 @@ I am going to use the required technologies in the following ways.
   - retrieving scores from previous rounds
   - submitting player choices
   - fetching game status (round number)
+  - getting the weather through the getWeather api
 - **DB/Login** - Store users, and previous games in database. Register and login users. Credentials securely stored in database.
 - **WebSocket** - Enables real-time communication between the players and the server. ENsures smooth gameplay
 
