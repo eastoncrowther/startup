@@ -96,7 +96,7 @@ I am going to use the required technologies in the following ways.
   - fetching game status (round number)
   - getting the weather through the getWeather api
 - **DB/Login** - Store users, and previous games in database. Register and login users. Credentials securely stored in database.
-- **WebSocket** - Enables real-time communication between the players and the server. ENsures smooth gameplay
+- **WebSocket** - Enables real-time communication between the players and the server. Ensures smooth gameplay
 
 ## 🚀 AWS deliverable
 
