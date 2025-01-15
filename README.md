@@ -22,7 +22,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] A concise and compelling elevator pitch
 - [ ] Description of key features
 - [ ] Description of how you will use each technology
-- [ ] One or more rough sketches of your application. Images must be embedded in this file using Markdown image references.
+- [x] One or more rough sketches of your application. Images must be embedded in this file using Markdown image references.
 
 ### Elevator pitch
 
@@ -30,15 +30,48 @@ Have you ever heard of the Prisoner's Dilemma? Experience this classic game theo
 
 ### Design
 
-![Design image](placeholder.png)
+![Design image](https://github.com/eastoncrowther/startup/blob/main/Screenshot%202025-01-14%20132131.png)
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+![design image](https://github.com/eastoncrowther/startup/blob/main/Screenshot%202025-01-14%20164345.png)
+
+The red boxes under the table are the buttons the user can press to submit their decision.
+
+Here is a sequence diagram that shows how people would interact with the backend to play the game.
 
 ```mermaid
-sequenceDiagram
-    actor You
-    actor Website
-    You->>Website: Replace this with your design
+    sequenceDiagram
+        actor Player 1
+        actor Player 2
+        participant LoginScreen 
+        participant WebSocket 
+        participant GameAPI as Prisoner's Dilemma API
+        participant Server
+
+        Player 1->>LoginScreen: Open application
+        Player 2->>LoginScreen: Open application
+        LoginScreen->>Server: Authenticate players
+        Server-->>LoginScreen: Authentication successful
+
+        Player 1->>WebSocket: Establish connection
+        Player 2->>WebSocket: Establish connection
+        WebSocket-->>Player 1: Connection confirmed
+        WebSocket-->>Player 2: Connection confirmed
+
+        Player 1->>GameAPI: Submit decision (Confess/Don't Confess) via WebSocket
+        Player 2->>GameAPI: Submit decision (Confess/Don't Confess) via WebSocket
+        GameAPI->>Server: Process decisions in real time
+        Server-->>GameAPI: Calculate points
+        GameAPI-->>WebSocket: Send round result to players
+        WebSocket-->>Player 1: Display round result
+        WebSocket-->>Player 2: Display round result
+
+        Player 1->>GameAPI: Continue next round via WebSocket (repeat 5 times)
+        Player 2->>GameAPI: Continue next round via WebSocket (repeat 5 times)
+        GameAPI->>Server: Process final dicision
+        Server-->>GameAPI: Calculate points
+        GameAPI-->>WebSocket: Send total scores to players
+        WebSocket-->>Player 1: Display total scores
+        WebSocket-->>Player 2: Display total scores
 ```
 
 ### Key features
@@ -46,8 +79,7 @@ sequenceDiagram
 - Secure login over HTTPS
 - Ability to see both players scores in real time
 - Buttons for each player to make a selection: confess, don't confess
-- Wins and losses from previous games are persistently stored
-- Ability to play against an automated opponet
+- Wins and losses from previous games are persistently storedt
 
 ### Technologies
 
