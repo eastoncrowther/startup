@@ -87,7 +87,7 @@ Here is a sequence diagram that shows how people would interact with the backend
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Handles the basic structure of the application. Two HTML pages. One for login and one for the game interface. Hyperlink to artifact with scores from preious rounds. 
+- **HTML** - Handles the basic structure of the application. Four HTML pages. One for login, another for the game interface, another for about info, and finally one for showing scores from preious rounds. 
 - **CSS** - Styles and animates the application to provide a more visually appealing design. Handles whitespace and colorchoice so that the website looks good on different devices.
 - **React** - Manages the application's dynamic behavior and state. After login switches to the game interface and refreshes both the timer and user decision.
 - **Service** - Backend service with endpoints for
