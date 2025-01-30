@@ -109,9 +109,9 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
 - [x] **HTML pages** - Four HTML pages. The first has a user login. The second has a non-functional game interface. The third displays archived scores. The fourth has information about the game, how it is scored, and what makes it interesting. 
-- [x] **Proper HTML element usage** - Pages are layed out with headers, footers, and main elements. Uses a forum for the user login structure, and list elements to provide game instructions on the game interface page. Buttons are used to push the user from the login screen to the game interface. A place holder for the scores page is created with a table.
+- [x] **Proper HTML element usage** - Pages are layed out with headers, footers, and main elements. Uses a forum for the user login structure, and list elements to provide game instructions on the game interface page. Buttons are used to push the user from the login screen to the game interface and allow the player to submit a decision. A place holder for the scores page is created with a table.
 - [x]  **Links** - Links in the header allow the user to navigate between all 4 pages. A link to this repository is found in the footer.
-- [x] **Text** - Text listed formatted with the paragraph element is found in the about page, providing a description of the game and what makes it interesting.
+- [x] **Text** - Text formatted with the paragraph element is found in the about page, providing a description of the game and what makes it interesting.
 - [x] **3rd party API placeholder** - On the about page there is a comment for where current weather information fetched from a 3rd party API will be displayed. 
 - [x] **Images** - There is an image of a prison displayed in the index.html page.
 - [x] **Login placeholder** - A login structure is found in the index.html page implemented with a forum.
