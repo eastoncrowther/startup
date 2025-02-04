@@ -1,0 +1,114 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* General Body Styling */
+body {
+    background-color: #1e1e2f;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+
+/* Navigation Styling */
+nav menu {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #2a2a40;
+    border-radius: 10px;
+}
+
+nav menu li {
+    display: inline;
+}
+
+nav menu li a {
+    text-decoration: none;
+    color: #619cf4;
+    font-weight: bold;
+    padding: 10px;
+    transition: color 0.3s ease;
+}
+
+nav menu li a:hover {
+    color: #ff0037;
+}
+
+/* Form Styling */
+form {
+    margin-top: 20px;
+    background: #29293d;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    margin: auto;
+}
+
+form div {
+    margin-bottom: 15px;
+}
+
+form span {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #ff0037;
+    color: black;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #ff0062;
+}
+
+/* Footer Styling */
+footer {
+    margin-top: 30px;
+    padding: 10px;
+    background-color: #2a2a40;
+    border-radius: 10px;
+}
+
+.text-reset {
+    font-weight: bold;
+}
+
+footer a {
+    color: #ff0037;
+    text-decoration: none;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+footer a:hover {
+    color: #ff0062;
+}
+
+
+
+
+
+
