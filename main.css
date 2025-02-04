@@ -6,6 +6,12 @@
     font-family: Arial, sans-serif;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 /* General Body Styling */
 body {
     background-color: #1e1e2f;
@@ -14,31 +20,39 @@ body {
     padding: 20px;
 }
 
-
 /* Navigation Styling */
-nav menu {
+nav {
+    width: 100%;
+    background-color: #2a2a40;
+    padding: 10px 0;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+nav ul {
     list-style: none;
     display: flex;
     justify-content: center;
-    gap: 10px;
-    padding: 10px;
-    background-color: #2a2a40;
-    border-radius: 10px;
+    gap: 20px;
+    padding: 0;
 }
 
-nav menu li {
-    display: inline;
+nav ul li {
+    display: inline-block;
 }
 
-nav menu li a {
+nav ul li a {
     text-decoration: none;
     color: #619cf4;
     font-weight: bold;
-    padding: 10px;
+    padding: 10px 15px;
     transition: color 0.3s ease;
 }
 
-nav menu li a:hover {
+nav ul li a:hover {
     color: #ff0037;
 }
 
@@ -62,16 +76,22 @@ form span {
     margin-bottom: 5px;
 }
 
-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+input, .form-control {
+    width: 100% !important;
+    padding: 8px !important;
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
+    background-color: #1e1e2f;
+    color: white;
 }
 
-button {
-    background-color: #ff0037;
-    color: black;
+input::placeholder {
+    color: #bbb;
+}
+
+button, .btn {
+    background-color: #ff0037 !important;
+    color: black !important;
     border: none;
     padding: 10px;
     border-radius: 5px;
@@ -80,8 +100,8 @@ button {
     font-weight: bold;
 }
 
-button:hover {
-    background-color: #ff0062;
+button:hover, .btn:hover {
+    background-color: #ff0062 !important;
 }
 
 /* Footer Styling */
@@ -90,10 +110,12 @@ footer {
     padding: 10px;
     background-color: #2a2a40;
     border-radius: 10px;
+    color: white; /* Ensure text color is white */
 }
 
 .text-reset {
     font-weight: bold;
+    color: white; /* Ensure "Easton Crowther" is white */
 }
 
 footer a {
@@ -106,6 +128,27 @@ footer a {
 footer a:hover {
     color: #ff0062;
 }
+
+/* Adjust Bootstrap Container Padding */
+.container {
+    max-width: 100%;
+    padding: 0 !important;
+    margin: 0 auto;
+}
+
+@media (max-height: 600px) {
+    header {
+        display: none;
+    }
+    footer {
+        display: none;
+    }
+    main {
+        flex: 1 100vh;
+    }
+}
+
+
 
 
 
