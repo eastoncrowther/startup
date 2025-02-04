@@ -30,6 +30,7 @@ nav {
     left: 0;
     right: 0;
     z-index: 1000;
+    border-radius: 10px;
 }
 
 nav ul {
@@ -110,12 +111,12 @@ footer {
     padding: 10px;
     background-color: #2a2a40;
     border-radius: 10px;
-    color: white; /* Ensure text color is white */
+    color: white; 
 }
 
 .text-reset {
     font-weight: bold;
-    color: white; /* Ensure "Easton Crowther" is white */
+    color: white; 
 }
 
 footer a {
