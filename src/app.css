@@ -6,6 +6,22 @@
     font-family: Arial, sans-serif;
 }
 
+header {
+    flex: 0 80px;
+}
+
+main {
+    flex: 1 calc(100vh - 110px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+footer {
+    flex: 0 30px;
+}
+
 html, .body {
     height: 100%;
     margin: 0;
