@@ -1,0 +1,23 @@
+{
+  "name": "startup",
+  "version": "1.0.0",
+  "description": "[My Notes](notes.md)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eastoncrowther/startup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eastoncrowther/startup/issues"
+  },
+  "homepage": "https://github.com/eastoncrowther/startup#readme",
+  "devDependencies": {
+    "vite": "^6.1.0"
+  }
+}
