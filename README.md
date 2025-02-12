@@ -131,11 +131,11 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ## 🚀 React part 1: Routing deliverable
 
-For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
+For this deliverable I used JavaScript and React so that the application can now dynamically rout the user between pages without the use of hyperlinks. There are still placeholders for future technologies.
 
-- [ ] **Bundled using Vite** - I did not complete this part of the deliverable.
-- [ ] **Components** - I did not complete this part of the deliverable.
-- [ ] **Router** - Routing between login and voting components.
+- [x] **Bundled using Vite** - Done!
+- [x] **Components** - Login, play, Scores, and About are all components with mocks for login, WebSocket, live score updates, and fetching the weather.
+- [x] **Router** - Routing between login and voting components.
 
 ## 🚀 React part 2: Reactivity
 
