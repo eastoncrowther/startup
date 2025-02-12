@@ -6,81 +6,67 @@
     font-family: Arial, sans-serif;
 }
 
-header {
-    flex: 0 80px;
-}
-
-main {
-    flex: 1 calc(100vh - 110px);
+/* Ensure Full Page Coverage */
+html, .body, #root {
+    height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
 }
-
-footer {
-    flex: 0 30px;
+nav {
+    border-radius: 10px;
 }
-
-html, .body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-/* General Body Styling */
+/* Main Container */
 .body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;  /* Ensure it takes full height */
     background-color: #1e1e2f;
     color: white;
     text-align: center;
-    padding: 20px;
 }
 
-/* Navigation Styling */
-nav {
-    width: 100%;
-    background-color: #2a2a40;
-    padding: 10px 0;
-    position: relative;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    border-radius: 10px;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 0;
-}
-
-nav ul li {
-    display: inline-block;
-}
-
-nav ul li a {
-    text-decoration: none;
+.navbar-nav .nav-link {
     color: #619cf4;
     font-weight: bold;
     padding: 10px 15px;
     transition: color 0.3s ease;
 }
+.nav-link:hover {
+    color: #000000 ;
+    padding: 10px 15px;
+}
 
-nav ul li a:hover {
-    color: #ff0037;
+/* Header Styling */
+header {
+    background-color: #29293d;
+    padding: 15px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #ffffff;
+    border-radius: 10px;
+}
+
+/* Main Content */
+main {
+    flex: 1;  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
 /* Form Styling */
 form {
-    margin-top: 20px;
     background: #29293d;
     padding: 20px;
     border-radius: 10px;
     width: 300px;
-    margin: auto;
 }
 
 form div {
@@ -93,11 +79,11 @@ form span {
     margin-bottom: 5px;
 }
 
-input, .form-control {
-    width: 100% !important;
-    padding: 8px !important;
-    border: 1px solid #ccc !important;
-    border-radius: 5px !important;
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     background-color: #1e1e2f;
     color: white;
 }
@@ -106,9 +92,9 @@ input::placeholder {
     color: #bbb;
 }
 
-button, .btn {
-    background-color: #ff0037 !important;
-    color: black !important;
+button {
+    background-color: #ff0037;
+    color: black;
     border: none;
     padding: 10px;
     border-radius: 5px;
@@ -117,24 +103,23 @@ button, .btn {
     font-weight: bold;
 }
 
-button:hover, .btn:hover {
-    background-color: #ff0062 !important;
+button:hover {
+    background-color: #ff0062;
 }
 
 /* Footer Styling */
 footer {
-    margin-top: 30px;
-    padding: 10px;
+    flex-shrink: 0;  
     background-color: #2a2a40;
+    padding: 10px;
+    color: white;
+    text-align: center;
+    font-size: 0.9rem;
     border-radius: 10px;
-    color: white; 
+    margin-top: auto; 
 }
 
-.text-reset {
-    font-weight: bold;
-    color: white; 
-}
-
+/* Footer Links */
 footer a {
     color: #ff0037;
     text-decoration: none;
@@ -146,24 +131,46 @@ footer a:hover {
     color: #ff0062;
 }
 
-/* Adjust Bootstrap Container Padding */
-.container {
-    max-width: 100%;
-    padding: 0 !important;
-    margin: 0 auto;
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    .navbar-nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .navbar-nav .nav-item {
+        width: 100%;
+        text-align: center;
+    }
+
+    .navbar-toggler {
+        border: none;
+        outline: none;
+        box-shadow: none;
+    }
 }
 
 @media (max-height: 600px) {
     header {
         display: none;
     }
+
     footer {
         display: none;
     }
+
     main {
-        flex: 1 100vh;
+        flex: 1;
     }
 }
+
+
+
 
 
 
