@@ -1,9 +1,10 @@
 import React from 'react';
+import './scores.css';
 
 export function Scores() {
   return (
     <main>
-      <table>
+      <table className='scores-table'>
         <thead>
           <tr>
             <th>#</th>

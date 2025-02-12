@@ -4,7 +4,7 @@ import './about.css';
 export function About() {
   return (
     <main>
-        <div id="picture" class="picture-box"><img width="400px" src="prison.png" alt="random" /></div>
+        <div id="picture" className="picture-box"><img width="400px" src="prison.png" alt="random" /></div>
 
         <p>
             The Prisoner's Dilemma is a timeless problem in game theory that challenges players to make strategic decisions. 

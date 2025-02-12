@@ -1,0 +1,51 @@
+.outcome-table {
+    width: 100%;
+    max-width: 600px; 
+    border-collapse: collapse;
+    margin: 20px auto;
+    font-size: 18px;
+    text-align: center;
+    background-color: #29293d; 
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.outcome-table th, 
+.outcome-table td {
+    border: 1px solid #444;
+    padding: 12px;
+}
+
+.outcome-table thead {
+    background-color: #1e1e2f; 
+    color: #619cf4; 
+    font-weight: bold;
+}
+
+.outcome-table th {
+    background-color: #29293d; 
+    color: #ff0037; 
+    font-weight: bold;
+}
+
+.outcome-table th:first-child {
+    background-color: #2a2a40;
+    color: #ff0037; 
+}
+
+.outcome-table tbody td {
+    font-weight: bold;
+    color: #ffffff; 
+}
+
+@media (max-width: 768px) {
+    .outcome-table {
+        font-size: 16px;
+    }
+
+    .outcome-table th, 
+    .outcome-table td {
+        padding: 8px;
+    }
+}
+
