@@ -135,7 +135,7 @@ For this deliverable I used JavaScript and React so that the application can now
 
 - [x] **Bundled using Vite** - Done!
 - [x] **Components** - Login, play, Scores, and About are all components with mocks for login, WebSocket, live score updates, and fetching the weather.
-- [x] **Router** - Routing between login and voting components.
+- [x] **Router** - Routing between login, scores, about, and play components.
 
 ## 🚀 React part 2: Reactivity
 
