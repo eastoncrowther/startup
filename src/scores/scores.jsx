@@ -34,7 +34,6 @@ export function Scores() {
           </tr>
         </tbody>
       </table>
-      <div>30 degrees and sunny</div>
     </main>
   );
 }

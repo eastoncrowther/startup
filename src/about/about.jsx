@@ -1,7 +1,15 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './about.css';
 
 export function About() {
+  const [temp, setTemp] = useState('loading...');
+  const [weather, setWeather] = useState('loading...');
+
+  useEffect(() => {
+    setTemp('40 degrees');
+    setWeather('Sunny');
+  }, []);
+
   return (
     <main>
         <div id="picture" className="picture-box"><img width="400px" src="prison.png" alt="random" /></div>
@@ -19,6 +27,9 @@ export function About() {
             The dilemma becomes far more intriguing in repeated interactions. In a single round, the stakes are straightforward, 
             but when players face each other repeatedly, consistently staying silent proves far less effective than building enough trust to cooperate by confessing 
         </p>
+
+        <div className = 'temp-red'>{temp}</div>
+        <div className = 'weather-red'>{weather}</div>
     </main>
   );
 }
