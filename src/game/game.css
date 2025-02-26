@@ -32,6 +32,14 @@
     background-color: #2a2a40;
     color: #ff0037; 
 }
+.timer-bar {
+    width: 75%;
+    height: 15px;
+    border-radius: 10px;
+    background-color: #ff0037; /* Background when empty */
+    border: none;
+    appearance: none;
+}
 
 .outcome-table tbody td {
     font-weight: bold;
