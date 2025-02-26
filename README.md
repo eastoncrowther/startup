@@ -141,7 +141,7 @@ For this deliverable I used JavaScript and React so that the application can now
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [x] **All functionality implemented or mocked out** - Login, scores, and game pages are working! Scores are stored in local storage. setTimout used to simulate rounds. The opponent is implemented right as a computer that selects 'confess' or 'quiet' randomly.
+- [x] **All functionality implemented or mocked out** - Login, scores, and game pages are working! Scores are stored and fetched from local storage. setTimout used to simulate rounds. The opponent is implemented right as a computer that selects 'confess' or 'quiet' randomly.
 - [ ] **Hooks** - Used useState and useEffect extensively in game.jsx, Also used useState in the authentication of the user.
 
 ## 🚀 Service deliverable
