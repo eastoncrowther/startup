@@ -7,13 +7,26 @@ export function Unauthenticated(props) {
   const [password, setPassword] = React.useState('');
 
   async function loginUser() {
-    localStorage.setItem('userName', userName);
-    props.onLogin(userName);
+    loginOrCreate(`/api/auth/login`);
   }
 
   async function createUser() {
-    localStorage.setItem('userName', userName);
-    props.onLogin(userName);
+    loginOrCreate(`/api/auth/create`);
+  }
+
+  async function loginOrCreate(endpoint) {
+    const res = await fetch(endpoint, {
+      method: 'post',
+      body: JSON.stringify({ username: userName, password: password }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+
+    });
+    if (response?.status === 200) {
+      localStorage.setItem('userName', userName);
+      props.onLogin(userName);
+    } 
   }
 
   return (
