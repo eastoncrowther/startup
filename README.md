@@ -148,11 +148,12 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Node.js/Express HTTP service** - I did not complete this part of the deliverable.
-- [ ] **Static middleware for frontend** - I did not complete this part of the deliverable.
-- [ ] **Calls to third party endpoints** - I did not complete this part of the deliverable.
-- [ ] **Backend service endpoints** - I did not complete this part of the deliverable.
-- [ ] **Frontend calls service endpoints** - I did not complete this part of the deliverable.
+- [x] **Node.js/Express HTTP service** - done!
+- [x] **Static middleware for frontend** - done!
+- [x] **Calls to third party endpoints** - made a call to fetch the weather from a third party endpoint from the about page.
+- [x] **Backend service endpoints** - endpoints for logging in and for scores. These will be persistantly stored in a db later.
+- [x] **Frontend calls service endpoints** - Calls the back end to authenticate users, get scores, update scores with the fetch function
+- [x] **Supports registration, login, logout, and requires authentication for calls to update and read scores**
 
 ## 🚀 DB/Login deliverable
 
