@@ -79,7 +79,7 @@ apiRouter.get('/score', verifyAuth, (_req, res) => {
 
 // SubmitScore
 apiRouter.post('/score', verifyAuth, (req, res) => {
-  scores = req.body;
+  scores.push(req.body);
   res.send(scores);
 });
 

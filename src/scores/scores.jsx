@@ -5,7 +5,7 @@ export function Scores() {
   const [scores, setScores] = React.useState([]);
 
   React.useEffect(() => {
-    fetch('/api/scores')
+    fetch('/api/score')
       .then((response) => response.json())
       .then((scores) => {
         setScores(scores);
