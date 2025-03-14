@@ -72,41 +72,16 @@ const verifyAuth = async (req, res, next) => {
   }
 };
 
-// GET: Retrieve all scores
-apiRouter.get('/scores', verifyAuth, (_req, res) => {
-    res.json(scores);
-});
-  
-  // POST: Save a new score
-apiRouter.post('/scores', verifyAuth, (req, res) => {
-    const { user1Name, user1Score, user2Name, user2Score } = req.body;
-  
-    // Validate incoming data
-    if (
-      !user1Name || typeof user1Score !== 'number' ||
-      !user2Name || typeof user2Score !== 'number'
-    ) {
-      return res.status(400).json({ error: 'Invalid input data' });
-    }
-  
-    const newScore = {
-      user1Name,
-      user1Score,
-      user2Name,
-      user2Score,
-      date: new Date().toLocaleString(),
-    };
-  
-    scores.push(newScore);
-    res.status(201).json(newScore);
-});
-  
-  // DELETE: Clear all scores
-apiRouter.delete('/scores', verifyAuth, (_req, res) => {
-  scores = [];
-  res.status(204).send();
+// GetScores
+apiRouter.get('/score', verifyAuth, (_req, res) => {
+  res.send(scores);
 });
 
+// SubmitScore
+apiRouter.post('/score', verifyAuth, (req, res) => {
+  scores = req.body;
+  res.send(scores);
+});
 
 // Default error handler
 app.use(function (err, req, res, next) {
@@ -117,6 +92,7 @@ app.use(function (err, req, res, next) {
 app.use((_req, res) => {
   res.sendFile('index.html', { root: 'public' });
 });
+
 
 async function createUser(email, password) {
   const passwordHash = await bcrypt.hash(password, 10);

@@ -86,7 +86,7 @@ export function Game({ userName }) {
       date
     };
 
-    await fetch('/api/scores', {
+    await fetch('/api/score', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(newScore),

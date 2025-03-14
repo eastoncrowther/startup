@@ -5,25 +5,15 @@ export function Scores() {
   const [scores, setScores] = React.useState([]);
 
   React.useEffect(() => {
-    fetch('/api/scores', { credentials: 'include' }) 
+    fetch('/api/scores')
       .then((response) => response.json())
-      .then((scores) => setScores(scores))
-      .catch((error) => console.error('Error fetching scores:', error));
+      .then((scores) => {
+        setScores(scores);
+      });
   }, []);
-  
-  const clearScores = () => {
-    fetch('/api/scores', { method: 'DELETE', credentials: 'include' }) 
-      .then(() => setScores([]))
-      .catch((error) => console.error('Error clearing scores:', error));
-  };
-  
-
+    
   return (
     <main>
-      <button onClick={clearScores} className="clear-button">
-        Clear Scores
-      </button>
-
       <table className='scores-table'>
         <thead>
           <tr>
