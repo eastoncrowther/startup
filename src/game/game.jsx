@@ -31,16 +31,8 @@ export function Game({ userName }) {
                 }, 1000); 
             } else {
                 setGameOver(true);
-                // Store the scores in local storage
-                const date = new Date().toLocaleDateString();
-                const newScore = {
-                    user1Name: userName,
-                    user1Score: yourScore,
-                    user2Name: 'bot',
-                    user2Score: opponentScore,
-                    date: date
-                };
-
+                saveScore();
+                
                 // Retrieve existing scores or initialize an empty array
                 const existingScores = JSON.parse(localStorage.getItem('scores')) || [];
                 
@@ -91,6 +83,24 @@ export function Game({ userName }) {
         setGameOver(false);
         setHasSubmitted(false);
     };
+
+    // Function to save score to an API
+    async function saveScore() {
+        const date = new Date().toLocaleDateString();
+        const newScore = {
+            user1Name: userName,
+            user1Score: yourScore,
+            user2Name: 'bot',
+            user2Score: opponentScore,
+            date: date
+        };
+
+        await fetch('/api/score', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newScore),
+        });
+    }
 
     return (
         <main>
