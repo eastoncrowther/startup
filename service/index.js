@@ -23,29 +23,29 @@ app.use(cookieParser());
 app.use(express.static('public'));
 
 // Router for service endpoints
-var apiRouter = express.Router();
+const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
 // CreateAuth a new user
 apiRouter.post('/auth/create', async (req, res) => {
-  if (await findUser('username', req.body.username)) {
+  if (await findUser('email', req.body.email)) {
     res.status(409).send({ msg: 'Existing user' });
   } else {
-    const user = await createUser(req.body.username, req.body.password);
+    const user = await createUser(req.body.email, req.body.password);
 
     setAuthCookie(res, user.token);
-    res.send({ username: user.username });
+    res.send({ email: user.email });
   }
 });
 
 // GetAuth login an existing user
 apiRouter.post('/auth/login', async (req, res) => {
-  const user = await findUser('username', req.body.username);
+  const user = await findUser('email', req.body.email);
   if (user) {
     if (await bcrypt.compare(req.body.password, user.password)) {
       user.token = uuid.v4();
       setAuthCookie(res, user.token);
-      res.send({ username: user.username });
+      res.send({ email: user.email });
       return;
     }
   }
@@ -72,16 +72,41 @@ const verifyAuth = async (req, res, next) => {
   }
 };
 
-// GetScores
+// GET: Retrieve all scores
 apiRouter.get('/scores', verifyAuth, (_req, res) => {
-  res.send(scores);
+    res.json(scores);
+});
+  
+  // POST: Save a new score
+apiRouter.post('/scores', verifyAuth, (req, res) => {
+    const { user1Name, user1Score, user2Name, user2Score } = req.body;
+  
+    // Validate incoming data
+    if (
+      !user1Name || typeof user1Score !== 'number' ||
+      !user2Name || typeof user2Score !== 'number'
+    ) {
+      return res.status(400).json({ error: 'Invalid input data' });
+    }
+  
+    const newScore = {
+      user1Name,
+      user1Score,
+      user2Name,
+      user2Score,
+      date: new Date().toLocaleString(),
+    };
+  
+    scores.push(newScore);
+    res.status(201).json(newScore);
+});
+  
+  // DELETE: Clear all scores
+apiRouter.delete('/scores', verifyAuth, (_req, res) => {
+  scores = [];
+  res.status(204).send();
 });
 
-// SubmitScore
-apiRouter.post('/score', verifyAuth, (req, res) => {
-  scores = updateScores(req.body);
-  res.send(scores);
-});
 
 // Default error handler
 app.use(function (err, req, res, next) {
@@ -93,11 +118,11 @@ app.use((_req, res) => {
   res.sendFile('index.html', { root: 'public' });
 });
 
-async function createUser(username, password) {
+async function createUser(email, password) {
   const passwordHash = await bcrypt.hash(password, 10);
 
   const user = {
-    username: username,
+    email: email,
     password: passwordHash,
     token: uuid.v4(),
   };
@@ -115,7 +140,7 @@ async function findUser(field, value) {
 // setAuthCookie in the HTTP response
 function setAuthCookie(res, authToken) {
   res.cookie(authCookieName, authToken, {
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: 'strict',
   });

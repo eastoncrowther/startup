@@ -5,17 +5,18 @@ export function Scores() {
   const [scores, setScores] = React.useState([]);
 
   React.useEffect(() => {
-    const scoresText = localStorage.getItem('scores');
-    if (scoresText) {
-      setScores(JSON.parse(scoresText));
-    }
+    fetch('/api/scores', { credentials: 'include' }) 
+      .then((response) => response.json())
+      .then((scores) => setScores(scores))
+      .catch((error) => console.error('Error fetching scores:', error));
   }, []);
-
-  // Function to clear scores
+  
   const clearScores = () => {
-    localStorage.removeItem('scores'); // Clear stored scores
-    setScores([]); // Update UI
+    fetch('/api/scores', { method: 'DELETE', credentials: 'include' }) 
+      .then(() => setScores([]))
+      .catch((error) => console.error('Error clearing scores:', error));
   };
+  
 
   return (
     <main>
