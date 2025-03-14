@@ -29,7 +29,7 @@ export function Unauthenticated(props) {
       localStorage.setItem('userName', userName);
       props.onLogin(userName);
     } else {
-      const body = await response.json();
+      const body = await res.json();
       setDisplayError(`⚠ Error: ${body.msg}`);
     }
   }
