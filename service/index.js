@@ -7,9 +7,6 @@ const DB = require('./database.js');
 
 const authCookieName = 'token';
 
-// The scores and users are saved in memory and disappear whenever the service is restarted.
-let scores = [];
-
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
@@ -66,23 +63,25 @@ apiRouter.delete('/auth/logout', async (req, res) => {
 
 // Middleware to verify that the user is authorized to call an endpoint
 const verifyAuth = async (req, res, next) => {
+
   const user = await findUser('token', req.cookies[authCookieName]);
   if (user) {
-    next();
+       next();
   } else {
     res.status(401).send({ msg: 'Unauthorized' });
   }
 };
 
 // GetScores
-apiRouter.get('/score', verifyAuth, (_req, res) => {
+apiRouter.get('/score', verifyAuth, async (req, res) => {
+  const scores = await DB.getScores();
   res.send(scores);
 });
 
 // SubmitScore
-apiRouter.post('/score', verifyAuth, (req, res) => {
-  scores.push(req.body);
-  res.send(scores);
+apiRouter.post('/score', verifyAuth, async (req, res) => {
+  const score = await DB.addScore(req.body)
+  res.send(score);
 });
 
 // Default error handler
@@ -94,7 +93,6 @@ app.use(function (err, req, res, next) {
 app.use((_req, res) => {
   res.sendFile('index.html', { root: 'public' });
 });
-
 
 async function createUser(email, password) {
   const passwordHash = await bcrypt.hash(password, 10);
@@ -112,13 +110,16 @@ async function createUser(email, password) {
 async function findUser(field, value) {
   if (!value) return null;
 
+  if (field === 'token') {
+    return DB.getUserByToken(value)
+  }
   return DB.getUser(value);
 }
 
 // setAuthCookie in the HTTP response
 function setAuthCookie(res, authToken) {
   res.cookie(authCookieName, authToken, {
-    secure: process.env.NODE_ENV === 'production',
+    secure: true,
     httpOnly: true,
     sameSite: 'strict',
   });

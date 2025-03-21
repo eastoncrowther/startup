@@ -5,6 +5,7 @@ const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostna
 const client = new MongoClient(url);
 const db = client.db('startup');
 const userCollection = db.collection('user');
+const scoreCollection = db.collection('score');
 
 
 (async function testConnection() {
@@ -18,7 +19,7 @@ const userCollection = db.collection('user');
 })();
 
 function getUser (email) {
-    return userCollection.findOne({ email: email});
+    return userCollection.findOne({ email: email });
 }
 
 function getUserByToken (token) {
@@ -31,11 +32,19 @@ async function addUser (user) {
 async function updateUser (user) {
     await userCollection.updateOne({ email: user.email }, { $set: user });
 }
-
+async function addScore (score) {
+    return scoreCollection.insertOne(score);
+}
+function getScores () {
+    const cursor = scoreCollection.find({});
+    return cursor.toArray();
+}
 
 module.exports = {
     getUser,
     getUserByToken,
     addUser,
-    updateUser
+    updateUser,
+    addScore,
+    getScores
 }
