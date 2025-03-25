@@ -159,11 +159,11 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **User registration** - I did not complete this part of the deliverable.
-- [ ] **User login and logout** - I did not complete this part of the deliverable.
-- [ ] **Stores data in MongoDB** - I did not complete this part of the deliverable.
-- [ ] **Stores credentials in MongoDB** - I did not complete this part of the deliverable.
-- [ ] **Restricts functionality based on authentication** - I did not complete this part of the deliverable.
+- [x] **User registration** - User info is stored in mongo db with password encryption. 
+- [x] **User login and logout** - Users logins and logouts are verified by fetching stored db info.
+- [x] **Stores data in MongoDB** - Program uses mongo db for persistant data storage.
+- [x] **Stores credentials in MongoDB** - Stores both users and their scores.
+- [x] **Restricts functionality based on authentication** - calls to mongo db are only accessed through endpoints that require authentication.
 
 ## 🚀 WebSocket deliverable
 
