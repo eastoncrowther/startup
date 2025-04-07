@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './game.css';
 
 export function Game({ userName }) {
@@ -11,6 +11,37 @@ export function Game({ userName }) {
   const [displayedOpponentScore, setDisplayedOpponentScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const socket = useRef(null);
+
+  useEffect(() => {
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    socket.current = new WebSocket(`${protocol}://${window.location.hostname}:4000`);
+  
+    socket.current.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+  
+      if (msg.type === 'start') {
+        setGameStarted(true);
+      } else if (msg.type === 'result') {
+        setDisplayedYourScore(prev => prev + msg.yourScore);
+        setDisplayedOpponentScore(prev => prev + msg.opponentScore);
+        // Continue to next round
+        setTimeout(() => {
+          setRound(r => r + 1);
+          setTimeLeft(5);
+          setHasSubmitted(false);
+        }, 1000);
+      } else if (msg.type === 'opponent_left') {
+        alert("Your opponent has disconnected.");
+        setGameOver(true);
+      }
+    };
+  
+    return () => {
+      socket.current?.close();
+    };
+  }, []);
 
   // Countdown Timer Effect
   useEffect(() => {
@@ -39,26 +70,8 @@ export function Game({ userName }) {
   // Handle Player Choice
   const handleChoice = (playerChoice) => {
     if (!gameStarted || hasSubmitted) return;
-
-    const opponentChoice = Math.random() < 0.5 ? "confess" : "quiet";
-
-    let newYourScore = yourScore;
-    let newOpponentScore = opponentScore;
-
-    if (playerChoice === "confess" && opponentChoice === "confess") {
-      newYourScore += 5;
-      newOpponentScore += 5;
-    } else if (playerChoice === "confess" && opponentChoice === "quiet") {
-      newOpponentScore += 8;
-    } else if (playerChoice === "quiet" && opponentChoice === "confess") {
-      newYourScore += 8;
-    } else {
-      newYourScore += 1;
-      newOpponentScore += 1;
-    }
-
-    setYourScore(newYourScore);
-    setOpponentScore(newOpponentScore);
+  
+    socket.current.send(JSON.stringify({ type: 'choice', choice: playerChoice }));
     setHasSubmitted(true);
   };
 
