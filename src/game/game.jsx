@@ -18,6 +18,10 @@ export function Game({ userName }) {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     socket.current = new WebSocket(`${protocol}://${window.location.hostname}:4000`);
   
+    socket.current.onopen = () => {
+      socket.current.send(JSON.stringify({ type: 'join', userName }));
+    };
+
     socket.current.onmessage = (event) => {
       const msg = JSON.parse(event.data);
   
@@ -113,9 +117,7 @@ export function Game({ userName }) {
       {!gameStarted ? (
         <>
           <h1>Welcome, {userName}!</h1>
-          <button onClick={startGame} className="start-button">
-            Start Game
-          </button>
+          <p>Waiting for an opponent to join...</p>
         </>
       ) : gameOver ? (
         <>

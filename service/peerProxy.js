@@ -1,96 +1,133 @@
 const { WebSocketServer } = require('ws');
 
-
 function peerProxy(httpServer) {
-  // Create a websocket object
   const socketServer = new WebSocketServer({ server: httpServer });
-
-  const playersWaiting = [];
-  const games = new Map();
+  const waitingPlayers = [];
 
   socketServer.on('connection', (socket) => {
     socket.isAlive = true;
+    socket.round = 1;
+    socket.totalScore = 0;
+    socket.choice = null;
 
-    // Match players in pairs
-    if (playersWaiting.length > 0) {
-      const opponent = playersWaiting.pop();
-      const gameId = uuid.v4();
-
-      games.set(gameId, { players: [socket, opponent], choices: {} });
-
-      socket.gameId = gameId;
-      opponent.gameId = gameId;
-
-      socket.send(JSON.stringify({ type: 'start', message: 'Game started!', player: 1 }));
-      opponent.send(JSON.stringify({ type: 'start', message: 'Game started!', player: 2 }));
-    } else {
-      playersWaiting.push(socket);
-    }
+    waitingPlayers.push(socket);
+    matchPlayers();
 
     socket.on('message', (data) => {
       const message = JSON.parse(data);
-      const game = games.get(socket.gameId);
-      if (!game) return;
-  
       if (message.type === 'choice') {
-        game.choices[socket] = message.choice;
-  
-        const [player1, player2] = game.players;
-        if (game.choices[player1] && game.choices[player2]) {
-          const choice1 = game.choices[player1];
-          const choice2 = game.choices[player2];
-  
-          // Compute scores based on the Prisoner's Dilemma
-          let score1 = 0, score2 = 0;
-          if (choice1 === "confess" && choice2 === "confess") {
-            score1 = score2 = 5;
-          } else if (choice1 === "confess" && choice2 === "quiet") {
-            score2 = 8;
-          } else if (choice1 === "quiet" && choice2 === "confess") {
-            score1 = 8;
-          } else {
-            score1 = score2 = 1;
-          }
-  
-          // Send results to both players
-          player1.send(JSON.stringify({ type: 'result', yourChoice: choice1, opponentChoice: choice2, yourScore: score1, opponentScore: score2 }));
-          player2.send(JSON.stringify({ type: 'result', yourChoice: choice2, opponentChoice: choice1, yourScore: score2, opponentScore: score1 }));
-  
-          game.choices = {}; // Reset choices for next round
-        }
+        socket.choice = message.choice;
+        handleChoices(socket);
       }
     });
 
-
-    socket.on('close', () => {
-      const index = playersWaiting.indexOf(socket);
-      if (index !== -1) playersWaiting.splice(index, 1);
-  
-      const game = games.get(socket.gameId);
-      if (game) {
-        const opponent = game.players.find(p => p !== socket);
-        if (opponent) {
-          opponent.send(JSON.stringify({ type: 'opponent_left' }));
-        }
-        games.delete(socket.gameId);
-      }
-    });
-
-    // Respond to pong messages by marking the connection alive
     socket.on('pong', () => {
       socket.isAlive = true;
     });
+
+    socket.on('close', () => {
+      const index = waitingPlayers.indexOf(socket);
+      if (index !== -1) {
+        waitingPlayers.splice(index, 1);
+      }
+      handleDisconnection(socket);
+    });
   });
 
-  // Periodically send out a ping message to make sure clients are alive
-  setInterval(() => {
-    socketServer.clients.forEach(function each(client) {
-      if (client.isAlive === false) return client.terminate();
+  function matchPlayers() {
+    while (waitingPlayers.length >= 2) {
+      const player1 = waitingPlayers.shift();
+      const player2 = waitingPlayers.shift();
 
-      client.isAlive = false;
-      client.ping();
+      // Set opponents
+      player1.opponent = player2;
+      player2.opponent = player1;
+
+      // Initialize round/score
+      player1.round = player2.round = 1;
+      player1.totalScore = player2.totalScore = 0;
+
+      // Notify both players
+      player1.send(JSON.stringify({ type: 'start' }));
+      player2.send(JSON.stringify({ type: 'start' }));
+    }
+  }
+
+  function handleChoices(player) {
+    const opponent = player.opponent;
+    if (!opponent || opponent.readyState !== WebSocket.OPEN) return;
+
+    if (player.choice && opponent.choice) {
+      const result = determineOutcome(player.choice, opponent.choice);
+
+      // Update scores
+      player.totalScore += result.player1Score;
+      opponent.totalScore += result.player2Score;
+
+      // Send results to both players
+      player.send(JSON.stringify({
+        type: 'result',
+        yourScore: result.player1Score,
+        opponentScore: result.player2Score,
+      }));
+
+      opponent.send(JSON.stringify({
+        type: 'result',
+        yourScore: result.player2Score,
+        opponentScore: result.player1Score,
+      }));
+
+      // Advance round
+      player.round++;
+      opponent.round++;
+
+      // Reset choices
+      player.choice = null;
+      opponent.choice = null;
+
+      // End game if round > 5 (frontend will handle final score)
+      if (player.round > 5 || opponent.round > 5) {
+        // Optional: you can send a game over message
+        // player.send(JSON.stringify({ type: 'game_over' }));
+        // opponent.send(JSON.stringify({ type: 'game_over' }));
+        player.opponent = null;
+        opponent.opponent = null;
+      }
+    }
+  }
+
+  function determineOutcome(choice1, choice2) {
+    if (choice1 === 'confess' && choice2 === 'confess') {
+      return { player1Score: 5, player2Score: 5 };
+    } else if (choice1 === 'confess' && choice2 === 'quiet') {
+      return { player1Score: 0, player2Score: 8 };
+    } else if (choice1 === 'quiet' && choice2 === 'confess') {
+      return { player1Score: 8, player2Score: 0 };
+    } else {
+      return { player1Score: 1, player2Score: 1 };
+    }
+  }
+
+  function handleDisconnection(player) {
+    const opponent = player.opponent;
+    if (opponent && opponent.readyState === WebSocket.OPEN) {
+      opponent.send(JSON.stringify({ type: 'opponent_left' }));
+      opponent.opponent = null;
+    }
+  }
+
+  setInterval(() => {
+    socketServer.clients.forEach((client) => {
+      if (!client.isAlive) {
+        client.terminate();
+      } else {
+        client.isAlive = false;
+        client.ping();
+      }
     });
   }, 10000);
 }
 
 module.exports = { peerProxy };
+
+
