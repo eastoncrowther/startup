@@ -7,8 +7,6 @@ export function Game({ userName }) {
   const [timeLeft, setTimeLeft] = useState(5);
   const [yourScore, setYourScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
-  const [displayedYourScore, setDisplayedYourScore] = useState(0);
-  const [displayedOpponentScore, setDisplayedOpponentScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
@@ -30,18 +28,34 @@ export function Game({ userName }) {
       const msg = JSON.parse(event.data);
   
       if (msg.type === 'start') {
-        setOpponentName(msg.opponentName);
-        console.log(msg.opponentName)
+        setOpponentName(msg.opponentName || 'Opponent'); 
+        console.log('Game started against:', msg.opponentName);
         setGameStarted(true);
+        setRound(1); 
+        setTimeLeft(5); 
+        setYourScore(0);
+        setOpponentScore(0);
+        setGameOver(false);
+        setHasSubmitted(false);
+        scoreSaved.current = false;
+
       } else if (msg.type === 'result') {
-        setDisplayedYourScore(prev => prev + msg.yourScore);
-        setDisplayedOpponentScore(prev => prev + msg.opponentScore);
-        // Continue to next round
-        setTimeout(() => {
-          setRound(r => r + 1);
-          setTimeLeft(5);
-          setHasSubmitted(false);
-        }, 1000);
+        // Update scores based on the result message
+        setYourScore(prev => prev + msg.yourScore);
+        setOpponentScore(prev => prev + msg.opponentScore);
+      
+        // Backend now drives the game end state via 'game_over'
+        // We still need to prepare for the *next* round visually
+        // Reset submission status and timer for the upcoming round
+        setTimeLeft(5);
+        setHasSubmitted(false);
+         if (msg.round < 5) { 
+             setRound(round + 1);
+         }
+      } else if (msg.type === 'game_over') {
+        setYourScore(msg.yourTotal); 
+        setOpponentScore(msg.opponentTotal);
+        setGameOver(true);
       } else if (msg.type === 'opponent_left') {
         alert("Your opponent has disconnected.");
         setGameOver(true);
@@ -61,22 +75,11 @@ export function Game({ userName }) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else {
-      setDisplayedYourScore(yourScore);
-      setDisplayedOpponentScore(opponentScore);
-    
-      if (round < 5) {
-        setTimeout(() => {
-          setRound(round + 1);
-          setTimeLeft(5);
-          setHasSubmitted(false);
-        }, 1000);
-      } else {
-        if (!scoreSaved.current) {
-          setGameOver(true);
-          saveScore(displayedYourScore, displayedOpponentScore); 
-          scoreSaved.current = true; 
-        }
+      // default choice
+      if (!hasSubmitted) {
+        handleChoice("quiet");
       }
+      setHasSubmitted(true);
     }
   }, [timeLeft, gameStarted, gameOver]);
 
@@ -90,46 +93,9 @@ export function Game({ userName }) {
 
   // Start the game
   const startGame = () => {
-    setGameStarted(true);
-    setRound(1);
-    setTimeLeft(5);
-    setYourScore(0);
-    setOpponentScore(0);
-    setDisplayedYourScore(0);
-    setDisplayedOpponentScore(0);
+    setGameStarted(false);
     setGameOver(false);
-    setHasSubmitted(false);
-    scoreSaved.current = false;
   };
-
-  async function saveScore(finalYourScore, finalOpponentScore) {
-    console.log('saveScore called with:', finalYourScore, finalOpponentScore);
-    const date = new Date().toLocaleString();
-  
-    const [user1Name, user2Name] = [userName, opponentName].sort();
-    const user1Score = user1Name === userName ? finalYourScore : finalOpponentScore;
-    const user2Score = user2Name === opponentName ? finalOpponentScore : finalYourScore;
-  
-    console.log('userName:', userName, 'user1Name:', user1Name);
-    if (userName === user1Name) {
-      const newScore = {
-        user1Name,
-        user1Score,
-        user2Name,
-        user2Score,
-        date,
-      };
-  
-      await fetch('/api/score', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(newScore),
-        credentials: 'include',
-      });
-    }
-  }
-  
-
 
   return (
     <main>
@@ -179,8 +145,8 @@ export function Game({ userName }) {
           </div>
 
           {/* Scores always visible but update only after round ends */}
-          <h3>YOUR SCORE: {displayedYourScore}</h3>
-          <h3>{(opponentName || 'Opponent').toUpperCase()}'S SCORE: {displayedOpponentScore}</h3>
+          <h3>YOUR SCORE: {yourScore}</h3>
+          <h3>{(opponentName || 'Opponent').toUpperCase()}'S SCORE: {opponentScore}</h3>
         </>
       )}
     </main>
