@@ -17,9 +17,9 @@ export function Game({ userName }) {
   const scoreSaved = useRef(false);
 
   useEffect(() => {
+    let port = window.location.port;
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    socket.current = new WebSocket(`${protocol}://${window.location.hostname}:4000`);
-  
+    socket.current = new WebSocket(`${protocol}://${window.location.hostname}:${port}/ws`);
     socket.current.onopen = () => {
       socket.current.send(JSON.stringify({ type: 'join', userName }));
     };
