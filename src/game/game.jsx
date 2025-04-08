@@ -71,13 +71,13 @@ export function Game({ userName }) {
   }, []);
 
   async function saveScore(player1, player1Score, player2, player2Score) {
+    console.log("in save score...", player1, player1Score, player2, player2Score)
     const date = new Date().toLocaleString();
-
     const newScore = {
       user1Name: player1,
       user1Score: player1Score,
       user2Name: player2,
-      player2Score: player2Score,
+      user2Score: player2Score,
       date
     };
     

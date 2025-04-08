@@ -127,7 +127,6 @@ function peerProxy(httpServer) {
         setTimeout(async () => {
           // Ensure players haven't disconnected during the short delay
           if (player.readyState === WebSocket.OPEN && opponent.readyState === WebSocket.OPEN) {
-              // await saveScoreToDatabase(player, opponent);
               console.log(`Sending game_over to ${player.userName} and ${opponent.userName}`);
               player.send(JSON.stringify({
                   type: 'game_over',
@@ -161,34 +160,6 @@ function peerProxy(httpServer) {
     }
   }
 
-  // async function saveScoreToDatabase(player1, player2) {
-  //   const date = new Date().toLocaleString();
-  //   const [user1Name, user2Name] = [player1.userName, player2.userName].sort();
-  
-  //   const user1Score = user1Name === player1.userName ? player1.totalScore : player2.totalScore;
-  //   const user2Score = user2Name === player2.userName ? player2.totalScore : player1.totalScore;
-  
-  //   const newScore = {
-  //     user1Name,
-  //     user1Score,
-  //     user2Name,
-  //     user2Score,
-  //     date,
-  //   };
-  
-  //   console.log("Submitting final score to DB:", newScore);
-  
-  //   try {
-  //     await fetch('/api/score', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify(newScore),
-  //     });
-  //   } catch (err) {
-  //     console.error("Failed to submit score to DB:", err);
-  //   }
-  // }
-  
   function determineOutcome(choice1, choice2) {
     if (choice1 === 'confess' && choice2 === 'confess') {
       return { player1Score: 5, player2Score: 5 };
