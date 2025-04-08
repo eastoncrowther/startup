@@ -1,32 +1,39 @@
 const { WebSocketServer } = require('ws');
-const fetch = require('node-fetch');
 
 function peerProxy(httpServer) {
   const socketServer = new WebSocketServer({ server: httpServer });
   const waitingPlayers = [];
 
   socketServer.on('connection', (socket) => {
+    console.log('Client connected');
     socket.isAlive = true;
+    socket.userName = null;
+    socket.opponent = null;
     socket.round = 1;
     socket.totalScore = 0;
     socket.choice = null;
-    socket.inGame = false;
-
+    
     socket.on('message', (data) => {
-      const message = JSON.parse(data);
-      if (message.type === 'join') {
+      let message;
+      try {
+        message = JSON.parse(data);
+        console.log('Received message:', message);
+      } catch (e) {
+        console.error('Failed to parse message or invalid JSON:', data);
+        return;
+      }      
+      if (message.type === 'join') { 
         socket.userName = message.userName;
-
-        if (!socket.inGame) {
-          waitingPlayers.push(socket);
-          matchPlayers();
-          socket.inGame = false;
-        }
+        waitingPlayers.push(socket);
+        matchPlayers();
       } else if (message.type === 'choice') {
-        socket.choice = message.choice;
-        handleChoices(socket);
+        if (socket.opponent && socket.userName) {
+          socket.choice = message.choice;
+          handleChoices(socket);
+        } else {
+          console.warn(`Choice received from unidentified or unmatched player: ${socket.userName}`);
+        }
       } 
-
     });
 
     socket.on('pong', () => {
@@ -43,38 +50,39 @@ function peerProxy(httpServer) {
   });
 
   function matchPlayers() {
+    console.log('Attempting to match players...');
     while (waitingPlayers.length >= 2) {
-      const player1 = waitingPlayers.shift();
-      const player2 = waitingPlayers.shift();
+      const player1 = waitingPlayers[0];
+      const player2 = waitingPlayers[1];
 
-      if (!player1 || !player2 || !player1.userName || !player2.userName) {
-        if(player1) waitingPlayers.unshift(player1); // Put back if valid
-        if(player2) waitingPlayers.unshift(player2); // Put back if valid
-        console.error("Attempted to match players without usernames set.");
-        continue;
+      if (player1.userName && player2.userName) {
+        waitingPlayers.splice(0, 2);
+        console.log(`Matching ${player1.userName} and ${player2.userName}`);
+
+        // Set opponents
+        player1.opponent = player2;
+        player2.opponent = player1;
+
+        // Initialize game state
+        player1.round = 1; 
+        player2.round = 1;
+        player1.totalScore = 0;
+        player2.totalScore = 0;
+        player1.choice = null; 
+        player2.choice = null;
+
+        // Notify both players - Usernames are guaranteed to be set here
+        try {
+          player1.send(JSON.stringify({ type: 'start', opponentName: player2.userName }));
+          player2.send(JSON.stringify({ type: 'start', opponentName: player1.userName }));
+          console.log(`Sent 'start' to ${player1.userName} and ${player2.userName}`);
+        } catch (error) {
+              console.error('Error sending start message:', error);
+        }
+      } else {
+        console.log('Waiting for players to identify before matching.');
+        break; 
       }
-
-      // Prevent rematch if already in a game
-      if (player1.opponent || player2.opponent) {
-        waitingPlayers.unshift(player1);
-        waitingPlayers.unshift(player2);
-        console.warn("Attempted rematch avoided.");
-        continue;
-      }
-
-      // Set opponents
-      player1.opponent = player2;
-      player2.opponent = player1;
-      player1.inGame = true;
-      player2.inGame = true;
-
-      // Initialize round/score
-      player1.round = player2.round = 1;
-      player1.totalScore = player2.totalScore = 0;
-
-      // Notify both players
-      player1.send(JSON.stringify({ type: 'start', opponentName: player2.userName }));
-      player2.send(JSON.stringify({ type: 'start', opponentName: player1.userName }));
     }
   }
 
@@ -119,8 +127,8 @@ function peerProxy(httpServer) {
         setTimeout(async () => {
           // Ensure players haven't disconnected during the short delay
           if (player.readyState === WebSocket.OPEN && opponent.readyState === WebSocket.OPEN) {
-              await saveScoreToDatabase(player, opponent);
-
+              // await saveScoreToDatabase(player, opponent);
+              console.log(`Sending game_over to ${player.userName} and ${opponent.userName}`);
               player.send(JSON.stringify({
                   type: 'game_over',
                   yourTotal: player.totalScore,
@@ -147,33 +155,33 @@ function peerProxy(httpServer) {
     }
   }
 
-  async function saveScoreToDatabase(player1, player2) {
-    const date = new Date().toLocaleString();
-    const [user1Name, user2Name] = [player1.userName, player2.userName].sort();
+  // async function saveScoreToDatabase(player1, player2) {
+  //   const date = new Date().toLocaleString();
+  //   const [user1Name, user2Name] = [player1.userName, player2.userName].sort();
   
-    const user1Score = user1Name === player1.userName ? player1.totalScore : player2.totalScore;
-    const user2Score = user2Name === player2.userName ? player2.totalScore : player1.totalScore;
+  //   const user1Score = user1Name === player1.userName ? player1.totalScore : player2.totalScore;
+  //   const user2Score = user2Name === player2.userName ? player2.totalScore : player1.totalScore;
   
-    const newScore = {
-      user1Name,
-      user1Score,
-      user2Name,
-      user2Score,
-      date,
-    };
+  //   const newScore = {
+  //     user1Name,
+  //     user1Score,
+  //     user2Name,
+  //     user2Score,
+  //     date,
+  //   };
   
-    console.log("Submitting final score to DB:", newScore);
+  //   console.log("Submitting final score to DB:", newScore);
   
-    try {
-      await fetch('/api/score', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newScore),
-      });
-    } catch (err) {
-      console.error("Failed to submit score to DB:", err);
-    }
-  }
+  //   try {
+  //     await fetch('/api/score', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(newScore),
+  //     });
+  //   } catch (err) {
+  //     console.error("Failed to submit score to DB:", err);
+  //   }
+  // }
   
   function determineOutcome(choice1, choice2) {
     if (choice1 === 'confess' && choice2 === 'confess') {

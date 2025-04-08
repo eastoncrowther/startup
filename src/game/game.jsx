@@ -26,6 +26,7 @@ export function Game({ userName }) {
 
     socket.current.onmessage = (event) => {
       const msg = JSON.parse(event.data);
+      console.log('Received WS message:', msg);
   
       if (msg.type === 'start') {
         setOpponentName(msg.opponentName || 'Opponent'); 
@@ -43,16 +44,13 @@ export function Game({ userName }) {
         // Update scores based on the result message
         setYourScore(prev => prev + msg.yourScore);
         setOpponentScore(prev => prev + msg.opponentScore);
-      
-        // Backend now drives the game end state via 'game_over'
-        // We still need to prepare for the *next* round visually
-        // Reset submission status and timer for the upcoming round
         setTimeLeft(5);
         setHasSubmitted(false);
          if (msg.round < 5) { 
-             setRound(round + 1);
+             setRound(prevRound => prevRound + 1);
          }
       } else if (msg.type === 'game_over') {
+        console.log('Processing game_over message'); 
         setYourScore(msg.yourTotal); 
         setOpponentScore(msg.opponentTotal);
         setGameOver(true);
@@ -95,6 +93,14 @@ export function Game({ userName }) {
   const startGame = () => {
     setGameStarted(false);
     setGameOver(false);
+     // Crucially, tell the backend we want to join again
+    if (socket.current?.readyState === WebSocket.OPEN) {
+        socket.current.send(JSON.stringify({ type: 'join', userName }));
+    } else {
+        // Handle case where socket might be closed (optional, depends on desired robustness)
+        console.error("WebSocket connection is not open. Cannot restart game.");
+        // You might want to re-initialize the WebSocket connection here if it closed.
+    }
   };
 
   return (
