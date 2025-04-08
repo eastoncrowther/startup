@@ -15,7 +15,9 @@ function peerProxy(httpServer) {
 
     socket.on('message', (data) => {
       const message = JSON.parse(data);
-      if (message.type === 'choice') {
+      if (message.type === 'join') {
+        socket.userName = message.userName;
+      } else if (message.type === 'choice') {
         socket.choice = message.choice;
         handleChoices(socket);
       }
@@ -39,6 +41,11 @@ function peerProxy(httpServer) {
       const player1 = waitingPlayers.shift();
       const player2 = waitingPlayers.shift();
 
+      // Prevent rematch if already in a game
+      if (player1.opponent || player2.opponent) {
+        continue;
+      }
+
       // Set opponents
       player1.opponent = player2;
       player2.opponent = player1;
@@ -48,8 +55,8 @@ function peerProxy(httpServer) {
       player1.totalScore = player2.totalScore = 0;
 
       // Notify both players
-      player1.send(JSON.stringify({ type: 'start' }));
-      player2.send(JSON.stringify({ type: 'start' }));
+      player1.send(JSON.stringify({ type: 'start', opponentName: player2.userName }));
+      player2.send(JSON.stringify({ type: 'start', opponentName: player1.userName }));
     }
   }
 

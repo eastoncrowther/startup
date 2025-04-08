@@ -12,7 +12,11 @@ export function Game({ userName }) {
   const [gameOver, setGameOver] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
+  const [opponentName, setOpponentName] = useState('Opponent');
+  
+
   const socket = useRef(null);
+  const scoreSaved = useRef(false);
 
   useEffect(() => {
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -26,6 +30,8 @@ export function Game({ userName }) {
       const msg = JSON.parse(event.data);
   
       if (msg.type === 'start') {
+        setOpponentName(msg.opponentName);
+        console.log(msg.opponentName)
         setGameStarted(true);
       } else if (msg.type === 'result') {
         setDisplayedYourScore(prev => prev + msg.yourScore);
@@ -57,16 +63,19 @@ export function Game({ userName }) {
     } else {
       setDisplayedYourScore(yourScore);
       setDisplayedOpponentScore(opponentScore);
-
+    
       if (round < 5) {
         setTimeout(() => {
           setRound(round + 1);
           setTimeLeft(5);
           setHasSubmitted(false);
-        }, 1000); 
+        }, 1000);
       } else {
-        setGameOver(true);
-        saveScore(yourScore, opponentScore); // Save scores to backend
+        if (!scoreSaved.current) {
+          setGameOver(true);
+          saveScore(displayedYourScore, displayedOpponentScore); 
+          scoreSaved.current = true; 
+        }
       }
     }
   }, [timeLeft, gameStarted, gameOver]);
@@ -90,26 +99,36 @@ export function Game({ userName }) {
     setDisplayedOpponentScore(0);
     setGameOver(false);
     setHasSubmitted(false);
+    scoreSaved.current = false;
   };
 
   async function saveScore(finalYourScore, finalOpponentScore) {
+    console.log('saveScore called with:', finalYourScore, finalOpponentScore);
     const date = new Date().toLocaleString();
-
-    const newScore = {
-      user1Name: userName,
-      user1Score: finalYourScore,
-      user2Name: 'bot',
-      user2Score: finalOpponentScore,
-      date
-    };
-
-    await fetch('/api/score', {
+  
+    const [user1Name, user2Name] = [userName, opponentName].sort();
+    const user1Score = user1Name === userName ? finalYourScore : finalOpponentScore;
+    const user2Score = user2Name === opponentName ? finalOpponentScore : finalYourScore;
+  
+    console.log('userName:', userName, 'user1Name:', user1Name);
+    if (userName === user1Name) {
+      const newScore = {
+        user1Name,
+        user1Score,
+        user2Name,
+        user2Score,
+        date,
+      };
+  
+      await fetch('/api/score', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(newScore),
         credentials: 'include',
       });
     }
+  }
+  
 
 
   return (
@@ -121,7 +140,7 @@ export function Game({ userName }) {
         </>
       ) : gameOver ? (
         <>
-          <h2>Game Over! Final Score: {userName}: {displayedYourScore} - Opponent {displayedOpponentScore}</h2>
+          <h2>Game Over! Final Score: {userName}: {yourScore} - {opponentName}: {opponentScore}</h2>
           <button onClick={startGame} className="restart-button">Restart Game</button>
         </>
       ) : (
@@ -161,7 +180,7 @@ export function Game({ userName }) {
 
           {/* Scores always visible but update only after round ends */}
           <h3>YOUR SCORE: {displayedYourScore}</h3>
-          <h3>OPPONENT'S SCORE: {displayedOpponentScore}</h3>
+          <h3>{(opponentName || 'Opponent').toUpperCase()}'S SCORE: {displayedOpponentScore}</h3>
         </>
       )}
     </main>
