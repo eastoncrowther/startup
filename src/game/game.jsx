@@ -55,8 +55,9 @@ export function Game({ userName }) {
         setOpponentScore(msg.opponentTotal);
         setGameOver(true);
         // add save scores logic here
-        saveScore(userName, yourScore, opponentName, opponentScore)
-  
+        if (msg.shouldSave) {
+          saveScore(userName, msg.yourTotal, opponentName, msg.opponentTotal);
+        }
       } else if (msg.type === 'opponent_left') {
         alert("Your opponent has disconnected.");
         setGameOver(true);

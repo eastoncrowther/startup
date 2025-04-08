@@ -139,7 +139,7 @@ function peerProxy(httpServer) {
                   type: 'game_over',
                   yourTotal: opponent.totalScore,
                   opponentTotal: player.totalScore,
-                  shouldSaave: false
+                  shouldSave: false
               }));
           }
 
