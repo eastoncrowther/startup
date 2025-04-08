@@ -131,13 +131,17 @@ function peerProxy(httpServer) {
               console.log(`Sending game_over to ${player.userName} and ${opponent.userName}`);
               player.send(JSON.stringify({
                   type: 'game_over',
+                  userName: player.userName,
                   yourTotal: player.totalScore,
+                  opponentName: opponent.userName,
                   opponentTotal: opponent.totalScore,
                   shouldSave: true
               }));
               opponent.send(JSON.stringify({
                   type: 'game_over',
+                  userName: player.userName,
                   yourTotal: opponent.totalScore,
+                  opponentName: opponent.userName,
                   opponentTotal: player.totalScore,
                   shouldSave: false
               }));
