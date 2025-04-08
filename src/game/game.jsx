@@ -54,6 +54,9 @@ export function Game({ userName }) {
         setYourScore(msg.yourTotal); 
         setOpponentScore(msg.opponentTotal);
         setGameOver(true);
+        // add save scores logic here
+        saveScore(userName, yourScore, opponentName, opponentScore)
+  
       } else if (msg.type === 'opponent_left') {
         alert("Your opponent has disconnected.");
         setGameOver(true);
@@ -64,6 +67,25 @@ export function Game({ userName }) {
       socket.current?.close();
     };
   }, []);
+
+  async function saveScore(player1, player1Score, player2, player2Score) {
+    const date = new Date().toLocaleString();
+
+    const newScore = {
+      user1Name: player1,
+      user1Score: player1Score,
+      user2Name: player2,
+      player2Score: player2Score,
+      date
+    };
+    
+    await fetch('/api/score', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(newScore),
+      credentials: 'include',
+    });    
+  }
 
   // Countdown Timer Effect
   useEffect(() => {

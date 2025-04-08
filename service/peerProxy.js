@@ -133,11 +133,13 @@ function peerProxy(httpServer) {
                   type: 'game_over',
                   yourTotal: player.totalScore,
                   opponentTotal: opponent.totalScore,
+                  shouldSave: true
               }));
               opponent.send(JSON.stringify({
                   type: 'game_over',
                   yourTotal: opponent.totalScore,
                   opponentTotal: player.totalScore,
+                  shouldSaave: false
               }));
           }
 
